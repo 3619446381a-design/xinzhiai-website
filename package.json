@@ -1,0 +1,25 @@
+{
+  "name": "xinzhiai-website",
+  "version": "2.0.0",
+  "description": "芯智AI助手 - 新国标电池研发合规系统",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "keywords": [
+    "battery",
+    "ai",
+    "compliance",
+    "patent",
+    "challenge-cup"
+  ]
+}

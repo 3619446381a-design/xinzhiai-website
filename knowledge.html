@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知识库 | 芯智AI助手 - 电池研发知识库与替代方案</title>
+    <!-- 国内CDN -->
+    <link href="https://lib.baomitu.com/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="https://img.icons8.com/color/96/000000/battery.png">
+    <style>
+        .knowledge-container {
+            padding-top: 80px;
+        }
+        
+        .category-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+            height: 100%;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .material-card {
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .material-card:hover {
+            border-color: #0d6efd;
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.1);
+        }
+        
+        .material-header {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .material-body {
+            padding: 15px;
+        }
+        
+        .patent-status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .patent-free {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .patent-expired {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .patent-risky {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            padding-right: 50px;
+        }
+        
+        .search-box button {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            border: none;
+            background: none;
+            color: #666;
+        }
+        
+        .tab-content {
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            padding: 20px;
+        }
+        
+        .nav-tabs .nav-link.active {
+            background: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-microchip"></i>
+                <strong>芯智AI助手</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="fas fa-home"></i> 首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="analysis.html"><i class="fas fa-chart-bar"></i> 风险分析</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="knowledge.html"><i class="fas fa-book"></i> 知识库</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="expert.html"><i class="fas fa-user-tie"></i> 专家对接</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="index.html#demo" class="btn btn-outline-light btn-sm ms-2">
+                            <i class="fas fa-robot"></i> AI对话
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面内容 -->
+    <div class="knowledge-container container">
+        <div class="row">
+            <div class="col-12">
+                <!-- 页面标题 -->
+                <div class="text-center mb-5">
+                    <h1 class="display-5 fw-bold mb-3">
+                        <i class="fas fa-lightbulb"></i>
+                        实验方案智能优化与替代建议库
+                    </h1>
+                    <p class="lead text-muted">模块三：基于公开文献、过期专利、学术论文，推荐已公开的、无侵权风险的替代方案</p>
+                    <div class="alert alert-success">
+                        <i class="fas fa-info-circle"></i>
+                        本知识库整合电池材料-工艺-性能-专利关联图谱，聚焦"知识产权自由度"与"国标符合度"
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 搜索框 -->
+        <div class="row mb-5">
+            <div class="col-lg-8 mx-auto">
+                <div class="search-box">
+                    <input type="text" class="form-control form-control-lg" 
+                           placeholder="搜索材料、工艺、专利或标准..." 
+                           id="knowledge-search">
+                    <button type="button" onclick="searchKnowledge()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 知识分类 -->
+        <div class="row mb-5">
+            <div class="col-12 mb-4">
+                <h3 class="mb-4"><i class="fas fa-layer-group me-2"></i> 知识分类</h3>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="category-card card">
+                    <div class="card-body text-center p-4">
+                        <div class="category-icon bg-primary">
+                            <i class="fas fa-flask text-white"></i>
+                        </div>
+                        <h5>材料数据库</h5>
+                        <p class="text-muted">正负极材料、电解液、隔膜等</p>
+                        <button class="btn btn-outline-primary btn-sm" onclick="showCategory('materials')">
+                            查看 <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="category-card card">
+                    <div class="card-body text-center p-4">
+                        <div class="category-icon bg-success">
+                            <i class="fas fa-industry text-white"></i>
+                        </div>
+                        <h5>工艺技术库</h5>
+                        <p class="text-muted">制备工艺、设备、参数优化</p>
+                        <button class="btn btn-outline-success btn-sm" onclick="showCategory('processes')">
+                            查看 <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="category-card card">
+                    <div class="card-body text-center p-4">
+                        <div class="category-icon bg-danger">
+                            <i class="fas fa-file-contract text-white"></i>
+                        </div>
+                        <h5>标准规范库</h5>
+                        <p class="text-muted">国标、行标、测试方法</p>
+                        <button class="btn btn-outline-danger btn-sm" onclick="showCategory('standards')">
+                            查看 <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-4">
+                <div class="category-card card">
+                    <div class="card-body text-center p-4">
+                        <div class="category-icon bg-warning">
+                            <i class="fas fa-file-alt text-white"></i>
+                        </div>
+                        <h5>专利文献库</h5>
+                        <p class="text-muted">过期专利、公开技术</p>
+                        <button class="btn btn-outline-warning btn-sm" onclick="showCategory('patents')">
+                            查看 <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 替代方案推荐 -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h4 class="mb-0"><i class="fas fa-exchange-alt me-2"></i> 无风险替代方案推荐</h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- 选项卡 -->
+                        <ul class="nav nav-tabs" id="alternativeTabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-bs-toggle="tab" href="#tab-ncm">NCM材料替代</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab-binder">粘结剂替代</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab-electrolyte">电解液替代</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab-process">工艺替代</a>
+                            </li>
+                        </ul>
+                        
+                        <!-- 选项卡内容 -->
+                        <div class="tab-content" id="alternativeTabsContent">
+                            <!-- NCM材料替代 -->
+                            <div class="tab-pane fade show active" id="tab-ncm">
+                                <h5 class="mb-4">高镍NCM材料无风险替代方案</h5>
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="material-card">
+                                            <div class="material-header">
+                                                <h6 class="mb-0">替代方案一：NCM622</h6>
+                                                <span class="patent-status patent-free">专利免费</span>
+                                            </div>
+                                            <div class="material-body">
+                                                <p><strong>技术特点：</strong>Ni:Co:Mn = 6:2:2，能量密度200-220Wh/kg</p>
+                                                <p><strong>专利状态：</strong>基础专利已过期，可自由使用</p>
+                                                <p><strong>性能对比：</strong>
+                                                    <br>• 安全性：优于NCM811
+                                                    <br>• 成本：略低于NCM811
+                                                    <br>• 循环寿命：相当
+                                                </p>
+                                                <p><strong>推荐指数：</strong> ★★★★☆</p>
+                                                <button class="btn btn-sm btn-outline-primary" onclick="showMaterialDetail('ncm622')">
+                                                    <i class="fas fa-info-circle me-1"></i> 查看详情
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-4">
+                                        <div class="material-card">
+                                            <div class="material-header">
+                                                <h6 class="mb-0">替代方案二：NCMA四元材料</h6>
+                                                <span class="patent-status patent-expired">专利将到期</span>
+                                            </div>
+                                            <div class="material-body">
+                                                <p><strong>技术特点：</strong>镍钴锰铝四元材料，能量密度230-250Wh/kg</p>
+                                                <p><strong>专利状态：</strong>核心专利2025年到期</p>
+                                                <p><strong>性能对比：</strong>
+                                                    <br>• 能量密度：接近NCM811
+                                                    <br>• 热稳定性：优于NCM811
+                                                    <br>• 循环寿命：略优
+                                                </p>
+                                                <p><strong>推荐指数：</strong> ★★★☆☆</p>
+                                                <button class="btn btn-sm btn-outline-primary" onclick="showMaterialDetail('ncma')">
+                                                    <i class="fas fa-info-circle me-1"></i> 查看详情
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 粘结剂替代 -->
+                            <div class="tab-pane fade" id="tab-binder">
+                                <h5 class="mb-4">粘结剂无风险替代方案</h5>
+                                <div class="row">
+                                    <div class="col-md-4 mb-4">
+                                        <div class="material-card">
+                                            <div class="material-header">
+                                                <h6 class="mb-0">聚丙烯酸类粘结剂</h6>
+                                                <span class="patent-status patent-free">专利免费</span>
+                                            </div>
+                                            <div class="material-body">
+                                                <p><strong>技术特点：</strong>水溶性，环保，成本低</p>
+                                                <p><strong>专利状态：</strong>基础专利已过期</p>
+                                                <p><strong>适用场景：</strong>硅碳负极、高镍正极</p>
+                                                <p><strong>性能：</strong>粘结力强，循环性能好</p>
+                                                <button class="btn btn-sm btn-outline-success" onclick="showMaterialDetail('paa')">
+                                                    查看详情
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4 mb-4">
+                                        <div class="material-card">
+                                            <div class="material-header">
+                                                <h6 class="mb-0">海藻酸钠基粘结剂</h6>
+                                                <span class="patent-status patent-free">专利免费</span>
+                                            </div>
+                                            <div class="material-body">
+                                                <p><strong>技术特点：</strong>天然高分子，柔性好</p>
+                                                <p><strong>专利状态：</strong>高校公开成果</p>
+                                                <p><strong>适用场景：</strong>硅基负极、柔性电池</p>
+                                                <p><strong>性能：</strong>膨胀适应性佳</p>
+                                                <button class="btn btn-sm btn-outline-success" onclick="showMaterialDetail('alginate')">
+                                                    查看详情
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4 mb-4">
+                                        <div class="material-card">
+                                            <div class="material-header">
+                                                <h6 class="mb-0">CMC/SBR复合体系</h6>
+                                                <span class="patent-status patent-expired">专利将到期</span>
+                                            </div>
+                                            <div class="material-body">
+                                                <p><strong>技术特点：</strong>工艺成熟，稳定性高</p>
+                                                <p><strong>专利状态：</strong>部分专利即将到期</p>
+                                                <p><strong>适用场景：</strong>石墨负极，大规模生产</p>
+                                                <p><strong>性能：</strong>工艺窗口宽</p>
+                                                <button class="btn btn-sm btn-outline-success" onclick="showMaterialDetail('cmc-sbr')">
+                                                    查看详情
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 电解液替代 -->
+                            <div class="tab-pane fade" id="tab-electrolyte">
+                                <h5 class="mb-4">电解液添加剂无风险替代方案</h5>
+                                <p>内容开发中...</p>
+                            </div>
+                            
+                            <!-- 工艺替代 -->
+                            <div class="tab-pane fade" id="tab-process">
+                                <h5 class="mb-4">工艺技术无风险替代方案</h5>
+                                <p>内容开发中...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 标准测试流程 -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0"><i class="fas fa-clipboard-check me-2"></i> 标准测试流程参考</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>GB38031-2025测试流程</h5>
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <strong>热扩散测试</strong>
+                                        <br><small>步骤：单体热失控触发 → 观察2小时 → 记录现象</small>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>过充测试</strong>
+                                        <br><small>步骤：1.5倍电压充电 → 监测温升 → 评估安全</small>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>短路测试</strong>
+                                        <br><small>步骤：外部短路 → 记录电流电压 → 检查安全阀</small>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>性能测试流程</h5>
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <strong>循环寿命测试</strong>
+                                        <br><small>GB/T 31484标准，1C充放电，容量保持率≥80%</small>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>倍率性能测试</strong>
+                                        <br><small>不同倍率充放电，评估功率特性</small>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>低温性能测试</strong>
+                                        <br><small>-20℃环境，评估容量保持率</small>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部导航 -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="d-flex justify-content-between">
+                    <a href="analysis.html" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-2"></i> 返回风险分析
+                    </a>
+                    <div>
+                        <button class="btn btn-outline-success me-2" onclick="requestCustomSolution()">
+                            <i class="fas fa-lightbulb me-2"></i> 申请定制方案
+                        </button>
+                        <a href="expert.html" class="btn btn-outline-warning">
+                            <i class="fas fa-user-tie me-2"></i> 咨询技术专家
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h5><i class="fas fa-microchip"></i> 芯智AI助手</h5>
+                    <p class="mb-0">模块三：实验方案智能优化与替代建议库</p>
+                    <p class="text-white-50 small">© 2024 芯智团队 - "挑战杯"参赛项目</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <p class="text-white-50 small">
+                        数据来源：公开文献、过期专利、学术论文、国家标准
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 引入JavaScript -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 知识库页面脚本
+        function searchKnowledge() {
+            const query = document.getElementById('knowledge-search').value;
+            if (!query) return;
+            
+            alert(`搜索功能开发中...\n您搜索的关键词是："${query}"\n完整搜索功能将在后续版本中提供。`);
+        }
+        
+        function showCategory(category) {
+            alert(`分类查看功能开发中...\n您选择的分类是："${category}"\n完整功能将在后续版本中提供。`);
+        }
+        
+        function showMaterialDetail(material) {
+            const details = {
+                'ncm622': {
+                    title: 'NCM622材料详细技术参数',
+                    content: `NCM622（LiNi₀.₆Co₀.₂Mn₀.₂O₂）技术参数：
+                    
+1. 基本参数
+   - 化学式：LiNi₀.₆Co₀.₂Mn₀.₂O₂
+   - 晶体结构：层状α-NaFeO₂型
+   - 振实密度：2.2-2.4 g/cm³
+   - 比表面积：0.3-0.8 m²/g
+
+2. 电化学性能
+   - 理论容量：≥180 mAh/g
+   - 实际容量：160-170 mAh/g
+   - 工作电压：3.6-3.8V
+   - 能量密度：200-220 Wh/kg
+
+3. 安全性能
+   - 热分解温度：≥220℃
+   - DSC放热量：< 800 J/g
+   - 安全性评级：良好
+
+4. 专利状态
+   - 基础专利：US 6,677,082（已过期）
+   - 改进专利：多已公开或过期
+   - 使用状态：可自由使用`
+                },
+                'paa': {
+                    title: '聚丙烯酸类粘结剂技术参数',
+                    content: `聚丙烯酸（PAA）类粘结剂技术参数：
+                    
+1. 基本特性
+   - 类型：水溶性高分子
+   - 分子量：100,000-500,000
+   - 固含量：20-40%
+   - pH值：6-8
+
+2. 应用性能
+   - 粘结强度：≥ 2.0 MPa
+   - 弹性模量：1-3 GPa
+   - 溶胀率：< 50%
+   - 循环寿命：≥ 3000次
+
+3. 工艺参数
+   - 涂布速度：10-30 m/min
+   - 干燥温度：80-120℃
+   - 添加比例：1-3 wt%
+
+4. 专利状态
+   - 基础专利：已过期
+   - 可自由使用`
+                }
+            };
+            
+            if (details[material]) {
+                alert(`${details[material].title}\n\n${details[material].content}`);
+            } else {
+                alert('材料详情功能开发中...');
+            }
+        }
+        
+        function requestCustomSolution() {
+            alert('定制方案申请功能开发中...\n\n您可以通过专家对接页面联系我们的技术专家，获取针对您具体需求的定制化替代方案。');
+        }
+        
+        // 初始化选项卡
+        document.addEventListener('DOMContentLoaded', function() {
+            // 激活第一个选项卡
+            const tab = new bootstrap.Tab(document.querySelector('#alternativeTabs .nav-link'));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>风险分析工具 | 芯智AI助手 - 新国标电池研发合规系统</title>
+    <!-- 国内CDN -->
+    <link href="https://lib.baomitu.com/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="https://img.icons8.com/color/96/000000/battery.png">
+    <style>
+        /* 分析页面特有样式 */
+        .analysis-container {
+            padding-top: 80px;
+            min-height: 100vh;
+        }
+        
+        .step-card {
+            border-left: 4px solid #0d6efd;
+            transition: all 0.3s;
+        }
+        
+        .step-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .parameter-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .risk-radar {
+            width: 100%;
+            height: 300px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .patent-card {
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+        
+        .patent-card:hover {
+            border-color: #0d6efd;
+            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.1);
+        }
+        
+        .patent-card.high-risk {
+            border-left: 4px solid #dc3545;
+        }
+        
+        .patent-card.medium-risk {
+            border-left: 4px solid #ffc107;
+        }
+        
+        .patent-card.low-risk {
+            border-left: 4px solid #198754;
+        }
+        
+        .compliance-check {
+            background: #e8f5e9;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .compliance-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .compliance-item.compliant {
+            border-left: 4px solid #4caf50;
+        }
+        
+        .compliance-item.non-compliant {
+            border-left: 4px solid #f44336;
+        }
+        
+        .compliance-item.needs-check {
+            border-left: 4px solid #ff9800;
+        }
+        
+        .generate-report-btn {
+            background: linear-gradient(135deg, #0d47a1 0%, #1976d2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        
+        .generate-report-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(25, 118, 210, 0.3);
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, #00897b 0%, #00bcd4 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-microchip"></i>
+                <strong>芯智AI助手</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="fas fa-home"></i> 首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="analysis.html"><i class="fas fa-chart-bar"></i> 风险分析</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="knowledge.html"><i class="fas fa-book"></i> 知识库</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="expert.html"><i class="fas fa-user-tie"></i> 专家对接</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="index.html#demo" class="btn btn-outline-light btn-sm ms-2">
+                            <i class="fas fa-robot"></i> AI对话
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 页面内容 -->
+    <div class="analysis-container container">
+        <div class="row">
+            <div class="col-12">
+                <!-- 页面标题 -->
+                <div class="text-center mb-5">
+                    <h1 class="display-5 fw-bold mb-3">
+                        <i class="fas fa-shield-alt"></i>
+                        专利与合规风险动态评估系统
+                    </h1>
+                    <p class="lead text-muted">模块二：三重比对分析 - 专利侵权扫描 + 新国标符合性自检 + 风险可视化报告</p>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        本工具基于智谱AI大模型和专业知识库，为电池研发方案提供智能风险分析
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- 左侧：输入参数 -->
+            <div class="col-lg-4">
+                <div class="step-card card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-edit me-2"></i>步骤1：输入研发方案</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="parameter-card">
+                            <h6 class="mb-3"><i class="fas fa-flask"></i> 材料参数</h6>
+                            <div class="mb-3">
+                                <label class="form-label">正极材料</label>
+                                <select class="form-select" id="cathode-material">
+                                    <option value="NCM811" selected>NCM811（镍钴锰三元，Ni80%）</option>
+                                    <option value="NCM622">NCM622（Ni60%）</option>
+                                    <option value="NCM523">NCM523（Ni50%）</option>
+                                    <option value="LFP">磷酸铁锂（LFP）</option>
+                                    <option value="NCA">NCA（镍钴铝）</option>
+                                    <option value="LMO">锰酸锂（LMO）</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">负极材料</label>
+                                <select class="form-select" id="anode-material">
+                                    <option value="graphite" selected>石墨</option>
+                                    <option value="silicon-carbon">硅碳复合</option>
+                                    <option value="silicon-oxygen">硅氧负极</option>
+                                    <option value="lithium-titanate">钛酸锂（LTO）</option>
+                                    <option value="hard-carbon">硬碳</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">电解液体系</label>
+                                <select class="form-select" id="electrolyte">
+                                    <option value="liquid" selected>液态电解液</option>
+                                    <option value="solid">固态电解质</option>
+                                    <option value="semi-solid">半固态电解质</option>
+                                    <option value="gel">凝胶电解质</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="parameter-card">
+                            <h6 class="mb-3"><i class="fas fa-industry"></i> 工艺参数</h6>
+                            <div class="mb-3">
+                                <label class="form-label">电极制备工艺</label>
+                                <select class="form-select" id="electrode-process">
+                                    <option value="wet-coating" selected>湿法涂布</option>
+                                    <option value="dry-electrode">干法电极</option>
+                                    <option value="extrusion">挤出涂布</option>
+                                    <option value="spray">喷雾干燥</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">特殊工艺</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="pre-lithiation">
+                                    <label class="form-check-label" for="pre-lithiation">预锂化</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="dry-room">
+                                    <label class="form-check-label" for="dry-room">干房环境生产</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="formation">
+                                    <label class="form-check-label" for="formation">特殊化成工艺</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="parameter-card">
+                            <h6 class="mb-3"><i class="fas fa-cogs"></i> 设计参数</h6>
+                            <div class="mb-3">
+                                <label class="form-label">电池类型</label>
+                                <select class="form-select" id="cell-type">
+                                    <option value="cylindrical" selected>圆柱电池</option>
+                                    <option value="prismatic">方形电池</option>
+                                    <option value="pouch">软包电池</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">能量密度目标</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="energy-density" value="240" min="100" max="500">
+                                    <span class="input-group-text">Wh/kg</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">循环寿命目标</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="cycle-life" value="1500" min="500" max="10000">
+                                    <span class="input-group-text">次</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">其他说明</label>
+                            <textarea class="form-control" id="additional-info" rows="3" placeholder="请补充其他技术细节，如：具体的配方比例、特殊添加剂、工艺参数等..."></textarea>
+                        </div>
+                        
+                        <button class="btn btn-primary w-100 py-3" onclick="startAnalysis()">
+                            <i class="fas fa-play-circle me-2"></i> 开始风险分析
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 中间：分析过程 -->
+            <div class="col-lg-8">
+                <div class="step-card card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-play-circle me-2"></i>步骤2：风险分析过程</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="analysis-process">
+                            <div class="text-center p-5">
+                                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                                <h5>等待开始分析</h5>
+                                <p class="text-muted">输入方案参数后，点击"开始风险分析"按钮</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-card card mb-4">
+                    <div class="card-header bg-warning text-white">
+                        <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>步骤3：分析结果</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="analysis-results">
+                            <div class="text-center p-5">
+                                <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+                                <h5>分析结果将在此显示</h5>
+                                <p class="text-muted">包括专利风险、合规性评估和综合建议</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 分析结果组件 -->
+                <div id="results-container" style="display: none;">
+                    <!-- 风险等级概览 -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-danger text-white">
+                            <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>风险等级概览</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 text-center mb-3">
+                                    <div class="display-6 fw-bold text-danger" id="high-risk-count">2</div>
+                                    <div class="text-danger fw-bold">高风险</div>
+                                    <small class="text-muted">需立即处理</small>
+                                </div>
+                                <div class="col-md-4 text-center mb-3">
+                                    <div class="display-6 fw-bold text-warning" id="medium-risk-count">3</div>
+                                    <div class="text-warning fw-bold">中风险</div>
+                                    <small class="text-muted">建议优化</small>
+                                </div>
+                                <div class="col-md-4 text-center mb-3">
+                                    <div class="display-6 fw-bold text-success" id="low-risk-count">5</div>
+                                    <div class="text-success fw-bold">低风险</div>
+                                    <small class="text-muted">可接受</small>
+                                </div>
+                            </div>
+                            <div class="progress mb-3" style="height: 20px;">
+                                <div class="progress-bar bg-danger" style="width: 20%" id="high-risk-bar"></div>
+                                <div class="progress-bar bg-warning" style="width: 30%" id="medium-risk-bar"></div>
+                                <div class="progress-bar bg-success" style="width: 50%" id="low-risk-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 专利风险详情 -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i>专利侵权风险扫描结果</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="patent-risks-list">
+                                <!-- 专利风险项将通过JS动态生成 -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 合规性检查 -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="fas fa-file-contract me-2"></i>新国标合规性检查</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="compliance-check">
+                                <div id="compliance-list">
+                                    <!-- 合规检查项将通过JS动态生成 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 报告生成 -->
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h4 class="mb-4"><i class="fas fa-file-download me-2"></i>生成分析报告</h4>
+                            <p class="text-muted mb-4">下载完整的《新国标合规预检报告》，包含详细的风险分析和建议</p>
+                            <button class="generate-report-btn mb-3" onclick="generateReport()">
+                                <i class="fas fa-file-pdf me-2"></i> 生成PDF报告
+                            </button>
+                            <p class="text-muted small">报告将包含：风险分析摘要、详细风险点、合规性检查结果、优化建议、相关专利和标准条款引用</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部导航 -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="d-flex justify-content-between">
+                    <a href="index.html" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-2"></i> 返回首页
+                    </a>
+                    <div>
+                        <a href="knowledge.html" class="btn btn-outline-success me-2">
+                            <i class="fas fa-lightbulb me-2"></i> 查看优化建议
+                        </a>
+                        <a href="expert.html" class="btn btn-outline-warning">
+                            <i class="fas fa-user-tie me-2"></i> 联系专家咨询
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h5><i class="fas fa-microchip"></i> 芯智AI助手</h5>
+                    <p class="mb-0">模块二：专利与合规风险动态评估系统</p>
+                    <p class="text-white-50 small">© 2024 芯智团队 - "挑战杯"参赛项目</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <p class="text-white-50 small">
+                        <i class="fas fa-info-circle me-1"></i>
+                        免责声明：本工具分析结果仅供参考，不构成法律意见。重大决策请咨询专业律师。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 引入JavaScript -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // 分析页面专用脚本
+        function startAnalysis() {
+            // 收集参数
+            const params = {
+                cathode: document.getElementById('cathode-material').value,
+                anode: document.getElementById('anode-material').value,
+                electrolyte: document.getElementById('electrolyte').value,
+                electrodeProcess: document.getElementById('electrode-process').value,
+                cellType: document.getElementById('cell-type').value,
+                energyDensity: document.getElementById('energy-density').value,
+                cycleLife: document.getElementById('cycle-life').value,
+                preLithiation: document.getElementById('pre-lithiation').checked,
+                dryRoom: document.getElementById('dry-room').checked,
+                formation: document.getElementById('formation').checked,
+                additionalInfo: document.getElementById('additional-info').value
+            };
+            
+            // 显示分析过程
+            showAnalysisProcess(params);
+            
+            // 模拟分析过程
+            setTimeout(() => {
+                showAnalysisResults(params);
+            }, 2500);
+        }
+        
+        function showAnalysisProcess(params) {
+            const processDiv = document.getElementById('analysis-process');
+            
+            processDiv.innerHTML = `
+                <div class="analysis-progress">
+                    <h6 class="mb-3">正在进行三重比对分析...</h6>
+                    
+                    <div class="progress-step mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>1. 专利侵权风险扫描</span>
+                            <span class="badge bg-primary">进行中</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+                        </div>
+                        <small class="text-muted">正在扫描专利数据库，进行语义级权利要求解析...</small>
+                    </div>
+                    
+                    <div class="progress-step mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>2. 新国标符合性自检</span>
+                            <span class="badge bg-success">进行中</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width: 100%"></div>
+                        </div>
+                        <small class="text-muted">正在比对GB38031-2025等标准的技术参数...</small>
+                    </div>
+                    
+                    <div class="progress-step">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>3. 风险可视化报告生成</span>
+                            <span class="badge bg-warning">进行中</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" style="width: 100%"></div>
+                        </div>
+                        <small class="text-muted">正在生成红黄绿三色风险图谱和评估报告...</small>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function showAnalysisResults(params) {
+            const resultsDiv = document.getElementById('analysis-results');
+            const container = document.getElementById('results-container');
+            
+            // 显示结果容器
+            container.style.display = 'block';
+            
+            // 模拟风险数据
+            const riskData = generateRiskData(params);
+            
+            // 更新风险概览
+            document.getElementById('high-risk-count').textContent = riskData.high;
+            document.getElementById('medium-risk-count').textContent = riskData.medium;
+            document.getElementById('low-risk-count').textContent = riskData.low;
+            
+            const total = riskData.high + riskData.medium + riskData.low;
+            document.getElementById('high-risk-bar').style.width = `${(riskData.high/total)*100}%`;
+            document.getElementById('medium-risk-bar').style.width = `${(riskData.medium/total)*100}%`;
+            document.getElementById('low-risk-bar').style.width = `${(riskData.low/total)*100}%`;
+            
+            // 生成专利风险列表
+            generatePatentRisks(riskData.patents);
+            
+            // 生成合规检查列表
+            generateComplianceList(riskData.compliance);
+            
+            // 更新分析过程显示
+            document.getElementById('analysis-process').innerHTML = `
+                <div class="alert alert-success">
+                    <h6><i class="fas fa-check-circle me-2"></i>分析完成！</h6>
+                    <p class="mb-0">成功完成对您方案的专利侵权扫描和新国标合规自检。</p>
+                </div>
+            `;
+            
+            resultsDiv.innerHTML = `
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-chart-bar me-2"></i>分析结果摘要</h6>
+                    <p class="mb-0">您的方案包含 <span class="badge bg-danger">${riskData.high}个高风险</span>、<span class="badge bg-warning">${riskData.medium}个中风险</span> 和 <span class="badge bg-success">${riskData.low}个低风险</span>。详细分析如下。</p>
+                </div>
+            `;
+        }
+        
+        function generateRiskData(params) {
+            // 模拟风险数据生成
+            let high = 0, medium = 0, low = 0;
+            const patents = [];
+            const compliance = [];
+            
+            // 根据材料类型判断风险
+            if (params.cathode === 'NCM811') {
+                high++;
+                patents.push({
+                    level: 'high',
+                    patent: 'CN201810123456.7',
+                    title: '高镍三元正极材料及其制备方法',
+                    assignee: '松下电器产业株式会社',
+                    risk: 'Ni含量≥85%的三元正极材料落入专利保护范围',
+                    suggestion: '调整Ni含量至78-82%区间，或考虑NCM622替代'
+                });
+            }
+            
+            if (params.anode === 'silicon-carbon') {
+                medium++;
+                patents.push({
+                    level: 'medium',
+                    patent: 'CN201910987654.3',
+                    title: '硅碳复合负极材料及其制备方法',
+                    assignee: '三星SDI株式会社',
+                    risk: '硅含量>30%的硅碳复合材料可能侵权',
+                    suggestion: '控制硅含量<20%，或使用公开的包覆工艺'
+                });
+            }
+            
+            if (params.electrodeProcess === 'dry-electrode') {
+                medium++;
+                patents.push({
+                    level: 'medium',
+                    patent: 'US2020123456A1',
+                    title: '干法电极制造工艺',
+                    assignee: 'Maxwell Technologies',
+                    risk: '特定工艺参数可能涉及专利',
+                    suggestion: '调整工艺参数或寻求技术许可'
+                });
+            }
+            
+            // 添加一些低风险
+            low += 3;
+            patents.push({
+                level: 'low',
+                patent: 'CN202010123456.7',
+                title: '电解液添加剂组合',
+                assignee: '比亚迪股份有限公司',
+                risk: '特定添加剂组合可能有专利限制',
+                suggestion: '使用公开的替代添加剂'
+            });
+            
+            // 合规性检查
+            compliance.push({
+                item: '热扩散测试要求',
+                status: params.energyDensity > 250 ? 'non-compliant' : 'compliant',
+                detail: params.energyDensity > 250 ? '高能量密度电池需加强热管理设计' : '符合要求',
+                standard: 'GB38031-2025 第7.2条'
+            });
+            
+            compliance.push({
+                item: '底部撞击测试',
+                status: params.cellType === 'cylindrical' ? 'needs-check' : 'compliant',
+                detail: params.cellType === 'cylindrical' ? '圆柱电池需验证底部防护' : '符合要求',
+                standard: 'GB38031-2025 第8.3条'
+            });
+            
+            compliance.push({
+                item: '循环寿命要求',
+                status: params.cycleLife >= 1500 ? 'compliant' : 'non-compliant',
+                detail: params.cycleLife >= 1500 ? '符合国标要求' : '需提升循环寿命',
+                standard: 'GB/T 31484-2015'
+            });
+            
+            return {
+                high: high,
+                medium: medium,
+                low: low,
+                patents: patents,
+                compliance: compliance
+            };
+        }
+        
+        function generatePatentRisks(patents) {
+            const container = document.getElementById('patent-risks-list');
+            let html = '';
+            
+            patents.forEach((item, index) => {
+                const levelClass = item.level === 'high' ? 'high-risk' : 
+                                  item.level === 'medium' ? 'medium-risk' : 'low-risk';
+                const levelText = item.level === 'high' ? '高风险' : 
+                                 item.level === 'medium' ? '中风险' : '低风险';
+                const levelColor = item.level === 'high' ? 'danger' : 
+                                  item.level === 'medium' ? 'warning' : 'success';
+                
+                html += `
+                    <div class="patent-card ${levelClass}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <span class="badge bg-${levelColor} mb-2">${levelText}</span>
+                                    <h6 class="mb-1">${item.title}</h6>
+                                    <p class="mb-1"><small class="text-muted">专利号：${item.patent} | 专利权人：${item.assignee}</small></p>
+                                </div>
+                                <button class="btn btn-sm btn-outline-primary" onclick="showPatentDetail(${index})">
+                                    详情
+                                </button>
+                            </div>
+                            <div class="mt-2">
+                                <p class="mb-1"><strong>风险点：</strong>${item.risk}</p>
+                                <p class="mb-0"><strong>建议：</strong>${item.suggestion}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function generateComplianceList(compliance) {
+            const container = document.getElementById('compliance-list');
+            let html = '';
+            
+            compliance.forEach(item => {
+                const icon = item.status === 'compliant' ? 'fa-check-circle text-success' :
+                            item.status === 'non-compliant' ? 'fa-times-circle text-danger' : 
+                            'fa-exclamation-circle text-warning';
+                
+                html += `
+                    <div class="compliance-item ${item.status}">
+                        <i class="fas ${icon} me-3 fa-lg"></i>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between">
+                                <strong>${item.item}</strong>
+                                <span class="badge ${item.status === 'compliant' ? 'bg-success' : item.status === 'non-compliant' ? 'bg-danger' : 'bg-warning'}">
+                                    ${item.status === 'compliant' ? '符合' : item.status === 'non-compliant' ? '不符合' : '待验证'}
+                                </span>
+                            </div>
+                            <p class="mb-1">${item.detail}</p>
+                            <small class="text-muted">依据：${item.standard}</small>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function showPatentDetail(index) {
+            alert(`专利详情功能开发中...\n这是第 ${index + 1} 个风险项的详细信息。\n完整功能将在后续版本中提供。`);
+        }
+        
+        function generateReport() {
+            alert('报告生成功能开发中...\n当前为演示版本，完整功能将提供PDF报告下载。\n\n报告将包含：\n1. 方案参数摘要\n2. 专利侵权风险分析\n3. 新国标合规性检查\n4. 综合优化建议\n5. 相关专利和标准条款引用');
+        }
+    </script>
+</body>
+</html>
