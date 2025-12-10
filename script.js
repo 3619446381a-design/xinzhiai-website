@@ -1,249 +1,367 @@
-// 芯智AI助手 - 交互逻辑
-// 知识库数据
-const knowledgeBase = {
-    // 侵权相关问题
-    "侵权": {
-        patterns: ["侵权", "专利风险", "会不会侵权", "专利冲突", "侵犯专利"],
-        responses: [
-            `🔍 <strong>专利风险分析报告</strong><br>
-            ✅ 已完成对您的方案扫描<br>
-            📊 检测到相关专利：<strong>3项</strong><br>
-            ⚠️ 潜在冲突点：<br>
-            • Ni含量≥85%的NCM正极材料<br>
-            • 硅碳负极中硅含量>30%的配方<br>
-            • 特定电解液添加剂组合<br>
-            💡 <strong>建议调整</strong>：<br>
-            1. 将Ni含量控制在78-82%区间<br>
-            2. 使用公开的粘结剂替代方案<br>
-            3. 咨询专家进行FTO分析`
-        ]
-    },
-    
-    // 国标合规问题
-    "合规": {
-        patterns: ["国标", "GB38031", "合规", "测试要求", "热扩散", "安全要求"],
-        responses: [
-            `📋 <strong>GB38031-2025合规要求</strong><br>
-            ⏰ 实施时间：<strong>2026年7月1日</strong><br>
-            🔥 热扩散测试：<br>
-            • 观察时间：≥2小时<br>
-            • 触发条件：单个电芯热失控<br>
-            • 通过标准：无起火、无爆炸<br>
-            🚗 新增测试项目：<br>
-            1. 电池包底部撞击测试<br>
-            2. 快充循环后安全测试<br>
-            3. 防篡改安全要求<br>
-            📝 <strong>建议</strong>：提前进行预测试，确保一次通过`
-        ]
-    },
-    
-    // 方案推荐问题
-    "方案": {
-        patterns: ["推荐", "替代", "方案", "粘结剂", "材料", "工艺"],
-        responses: [
-            `💡 <strong>无风险替代方案推荐</strong><br>
-            🔋 针对硅碳负极粘结剂：<br>
-            <strong>1. 聚丙烯酸类粘结剂（公开技术）</strong><br>
-            • 优势：成本低，循环性能好<br>
-            • 专利状态：已过期专利<br>
-            • 推荐指数：★★★★☆<br><br>
-            <strong>2. 海藻酸钠基粘结剂（创新方向）</strong><br>
-            • 优势：环保，柔性好<br>
-            • 专利状态：高校公开成果<br>
-            • 推荐指数：★★★☆☆<br><br>
-            <strong>3. CMC/SBR复合体系（成熟方案）</strong><br>
-            • 优势：工艺成熟，稳定性高<br>
-            • 专利状态：部分专利即将到期<br>
-            • 推荐指数：★★★★☆`
-        ]
-    },
-    
-    // 合规检查
-    "检查": {
-        patterns: ["检查", "分析", "扫描", "评估", "风险分析"],
-        responses: [
-            `🛡️ <strong>合规与风险综合评估</strong><br>
-            📈 分析结果：<br>
-            <div class="risk-result">
-                <div class="d-flex justify-content-between">
-                    <span>专利侵权风险：</span>
-                    <span class="badge bg-warning">中等</span>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <span>新国标符合性：</span>
-                    <span class="badge bg-success">良好</span>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <span>技术可行性：</span>
-                    <span class="badge bg-info">高</span>
-                </div>
-            </div>
-            📋 <strong>具体建议</strong>：<br>
-            1. 完善热管理系统设计<br>
-            2. 增加底部防护结构<br>
-            3. 进行小批量验证测试<br>
-            4. 申请相关实用新型专利`
-        ]
-    },
-    
-    // 默认回答
-    "默认": {
-        responses: [
-            `🤖 <strong>芯智AI助手</strong><br>
-            我是专为新国标电池研发设计的智能合规助手。<br><br>
-            🔍 <strong>我可以帮您</strong>：<br>
-            • 分析专利侵权风险<br>
-            • 查询GB38031等国家标准<br>
-            • 推荐无风险替代方案<br>
-            • 评估研发方案合规性<br><br>
-            💡 <strong>请具体描述您的需求</strong>，例如：<br>
-            "我的磷酸铁锂电池方案会侵权吗？"<br>
-            "新国标对热扩散有什么要求？"`
-        ]
-    }
-};
+// script.js - 芯智AI助手前端交互
 
-// 对话历史
-let chatHistory = [];
+// DOM元素
+const chatMessages = document.getElementById('chat-messages');
+const userInput = document.getElementById('user-input');
+const sendButton = document.getElementById('send-button');
+
+// 配置
+const API_BASE = '/api'; // Vercel部署时使用相对路径
+
+// 初始化
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('芯智AI助手初始化完成');
+    
+    // 添加欢迎消息
+    setTimeout(() => {
+        addMessage(`🤖 **芯智AI助手** - 电池研发合规专家
+        
+欢迎使用芯智AI助手！我专注于新国标电池研发的合规与创新辅助。
+
+**我可以帮您分析**：
+• 📊 **专利侵权风险**：识别专利权利要求，评估风险等级
+• 📋 **新国标合规**：解读GB38031-2025等技术标准
+• 💡 **方案优化建议**：推荐无专利风险的替代材料
+• 🔧 **研发流程指导**：提供合规的测试方法和流程
+
+**请尝试提问**，或点击下方快速提问按钮开始体验。`, 'ai');
+    }, 1000);
+    
+    // 绑定事件
+    if (sendButton) {
+        sendButton.addEventListener('click', sendMessage);
+    }
+    
+    if (userInput) {
+        userInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    }
+});
 
 // 发送消息
-function sendMessage() {
-    const input = document.getElementById('user-input');
-    const message = input.value.trim();
-    
-    if (message === '') return;
+async function sendMessage() {
+    const message = userInput.value.trim();
+    if (!message) return;
     
     // 添加用户消息
     addMessage(message, 'user');
+    userInput.value = '';
     
-    // 清空输入框
-    input.value = '';
+    // 显示加载中
+    const loadingId = showLoadingMessage();
     
-    // 模拟AI思考（延迟1秒回复）
-    setTimeout(() => {
-        const aiResponse = getAIResponse(message);
-        addMessage(aiResponse, 'ai');
-    }, 1000);
-}
-
-// 处理回车键
-function handleEnter(event) {
-    if (event.key === 'Enter') {
-        sendMessage();
+    try {
+        // 调用AI API
+        const response = await fetch(`${API_BASE}/chat`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: message,
+                context: ''
+            })
+        });
+        
+        const data = await response.json();
+        
+        // 移除加载消息
+        removeMessage(loadingId);
+        
+        if (data.success) {
+            // 添加AI回复
+            addMessage(data.reply, 'ai');
+        } else {
+            // 使用后备回复
+            addMessage(data.fallback || '抱歉，服务暂时不可用', 'ai');
+        }
+        
+    } catch (error) {
+        console.error('API请求失败:', error);
+        removeMessage(loadingId);
+        addMessage('网络连接异常，请检查网络后重试', 'ai');
     }
 }
 
 // 快速提问
-function askQuestion(question) {
-    document.getElementById('user-input').value = question;
+function quickQuestion(question) {
+    userInput.value = question;
     sendMessage();
 }
 
-// 添加消息到对话框
-function addMessage(text, sender) {
-    const chatMessages = document.getElementById('chat-messages');
+// 添加消息到聊天框
+function addMessage(content, sender) {
+    if (!chatMessages) return;
     
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${sender}-message`;
     
-    const avatar = document.createElement('div');
-    avatar.className = 'avatar';
-    
-    const content = document.createElement('div');
-    content.className = 'content';
+    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     
     if (sender === 'ai') {
-        avatar.innerHTML = '<i class="fas fa-robot"></i>';
-        content.innerHTML = `<strong>芯智AI：</strong> ${text}`;
-        messageDiv.appendChild(avatar);
-        messageDiv.appendChild(content);
+        messageDiv.innerHTML = `
+            <div class="message-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="message-content">
+                <div class="message-header">
+                    <strong>芯智AI</strong>
+                    <span class="message-time">${timestamp}</span>
+                </div>
+                <div class="message-text">${formatMessage(content)}</div>
+            </div>
+        `;
     } else {
-        avatar.innerHTML = '<i class="fas fa-user"></i>';
-        content.innerHTML = `<strong>您：</strong> ${text}`;
-        messageDiv.appendChild(content);
-        messageDiv.appendChild(avatar);
+        messageDiv.innerHTML = `
+            <div class="message-content">
+                <div class="message-header">
+                    <strong>您</strong>
+                    <span class="message-time">${timestamp}</span>
+                </div>
+                <div class="message-text">${content}</div>
+            </div>
+            <div class="message-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+        `;
     }
     
     chatMessages.appendChild(messageDiv);
-    
-    // 保存到历史
-    chatHistory.push({
-        sender: sender,
-        text: text,
-        time: new Date().toLocaleTimeString()
-    });
-    
-    // 滚动到底部
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// 获取AI回复
-function getAIResponse(userMessage) {
-    userMessage = userMessage.toLowerCase();
+// 显示加载消息
+function showLoadingMessage() {
+    const loadingId = 'loading-' + Date.now();
     
-    // 检查匹配模式
-    for (const category in knowledgeBase) {
-        if (category === '默认') continue;
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = loadingId;
+    loadingDiv.className = 'message ai-message loading';
+    
+    loadingDiv.innerHTML = `
+        <div class="message-avatar">
+            <i class="fas fa-robot"></i>
+        </div>
+        <div class="message-content">
+            <div class="message-header">
+                <strong>芯智AI</strong>
+                <span class="message-time">正在输入...</span>
+            </div>
+            <div class="message-text">
+                <div class="loading-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    chatMessages.appendChild(loadingDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    return loadingId;
+}
+
+// 移除消息
+function removeMessage(messageId) {
+    const message = document.getElementById(messageId);
+    if (message) {
+        message.remove();
+    }
+}
+
+// 格式化消息内容
+function formatMessage(text) {
+    // 简单的markdown转换
+    let formatted = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>')
+        .replace(/\*\s(.*?)(?=\n|$)/g, '<li>$1</li>')
+        .replace(/#\s(.*?)(?=\n|$)/g, '<h4>$1</h4>')
+        .replace(/✅/g, '<span class="badge bg-success">✅</span>')
+        .replace(/⚠️/g, '<span class="badge bg-warning">⚠️</span>')
+        .replace(/🔍/g, '<span class="badge bg-info">🔍</span>')
+        .replace(/💡/g, '<span class="badge bg-primary">💡</span>');
+    
+    return `<p>${formatted}</p>`;
+}
+
+// 风险分析功能
+async function analyzeRisk() {
+    const material = document.getElementById('material-select')?.value || 'NCM811';
+    const process = document.getElementById('process-select')?.value || '干法电极';
+    
+    // 显示分析中
+    const resultDiv = document.getElementById('analysis-result');
+    if (resultDiv) {
+        resultDiv.innerHTML = `
+            <div class="text-center p-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">分析中...</span>
+                </div>
+                <p class="mt-2">正在分析 ${material} + ${process} 的风险...</p>
+            </div>
+        `;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE}/analyze`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                material: material,
+                process: process
+            })
+        });
         
-        const patterns = knowledgeBase[category].patterns;
-        for (const pattern of patterns) {
-            if (userMessage.includes(pattern)) {
-                const responses = knowledgeBase[category].responses;
-                return responses[Math.floor(Math.random() * responses.length)];
-            }
+        const data = await response.json();
+        
+        if (resultDiv && data.success) {
+            displayAnalysisResult(data.data);
+        }
+        
+    } catch (error) {
+        console.error('风险分析失败:', error);
+        if (resultDiv) {
+            resultDiv.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    分析失败：${error.message}
+                </div>
+            `;
         }
     }
-    
-    // 默认回复
-    const defaultResponses = knowledgeBase['默认'].responses;
-    return defaultResponses[0];
 }
 
-// 显示国标详情
-function showStandard(stdCode) {
-    let content = '';
+// 显示分析结果
+function displayAnalysisResult(data) {
+    const resultDiv = document.getElementById('analysis-result');
+    if (!resultDiv) return;
     
-    if (stdCode === 'GB38031') {
-        content = `
-            <strong>GB38031-2025 电动汽车用动力蓄电池安全要求</strong><br><br>
-            📅 实施日期：2026年7月1日<br>
-            🎯 适用范围：所有电动汽车用动力电池<br><br>
-            🔥 <strong>主要更新内容</strong>：<br>
-            1. 热扩散测试观察时间延长至2小时<br>
-            2. 新增电池包底部撞击安全测试<br>
-            3. 增加防篡改设计要求<br>
-            4. 完善热管理系统安全标准<br><br>
-            ⚠️ <strong>企业应对建议</strong>：<br>
-            • 提前进行设计调整<br>
-            • 开展预测试验证<br>
-            • 建立合规管理体系
-        `;
-    } else if (stdCode === 'GB34014') {
-        content = `
-            <strong>GB/T 34014-2023 汽车用动力电池编码规则</strong><br><br>
-            📊 核心要求：一池一码，全生命周期追溯<br><br>
-            🏷️ <strong>编码结构</strong>：<br>
-            • 第一部分：企业代码<br>
-            • 第二部分：产品型号<br>
-            • 第三部分：生产序列号<br>
-            • 第四部分：生产日期<br><br>
-            🔗 <strong>应用场景</strong>：<br>
-            • 生产质量管理<br>
-            • 售后维修追溯<br>
-            • 回收利用管理<br>
-            • 安全责任认定
-        `;
+    let html = `
+        <div class="analysis-report">
+            <h4 class="mb-3">📊 风险分析报告</h4>
+            
+            <div class="risk-summary mb-4">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-danger bg-opacity-10">
+                            <div class="card-body text-center">
+                                <h5 class="text-danger">高风险</h5>
+                                <h2>${data.highRiskCount || 2}</h2>
+                                <small>需立即处理</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-warning bg-opacity-10">
+                            <div class="card-body text-center">
+                                <h5 class="text-warning">中风险</h5>
+                                <h2>${data.mediumRiskCount || 3}</h2>
+                                <small>建议优化</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-success bg-opacity-10">
+                            <div class="card-body text-center">
+                                <h5 class="text-success">低风险</h5>
+                                <h2>${data.lowRiskCount || 5}</h2>
+                                <small>可接受</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="risk-details">
+                <h5 class="mb-3">🔍 详细风险点</h5>
+    `;
+    
+    // 添加风险详情
+    if (data.risks && data.risks.length > 0) {
+        html += '<ul class="list-group">';
+        data.risks.forEach((risk, index) => {
+            const badgeClass = risk.level === 'high' ? 'danger' : 
+                              risk.level === 'medium' ? 'warning' : 'success';
+            
+            html += `
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <span class="badge bg-${badgeClass} me-2">${risk.level === 'high' ? '高风险' : risk.level === 'medium' ? '中风险' : '低风险'}</span>
+                            <strong>${risk.description}</strong>
+                            <div class="mt-1">
+                                <small class="text-muted">专利号：${risk.patentNumber || '未指定'}</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary" onclick="showPatentDetail(${index})">
+                            详情
+                        </button>
+                    </div>
+                    <div class="mt-2">
+                        <strong>建议：</strong> ${risk.suggestion || '请咨询专家'}
+                    </div>
+                </li>
+            `;
+        });
+        html += '</ul>';
     }
     
-    addMessage(content, 'ai');
+    html += `
+            </div>
+            
+            <div class="recommendations mt-4">
+                <h5 class="mb-3">💡 优化建议</h5>
+                <div class="card">
+                    <div class="card-body">
+                        <ol>
+                            <li>调整材料配方，避开专利保护范围</li>
+                            <li>考虑使用公开的替代方案</li>
+                            <li>进行小批量验证测试</li>
+                            <li>咨询专业知识产权律师</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4 text-center">
+                <button class="btn btn-primary" onclick="downloadReport()">
+                    <i class="fas fa-download me-2"></i>下载分析报告
+                </button>
+                <button class="btn btn-outline-primary ms-2" onclick="connectExpert()">
+                    <i class="fas fa-headset me-2"></i>联系专家
+                </button>
+            </div>
+        </div>
+    `;
+    
+    resultDiv.innerHTML = html;
 }
 
-// 初始化页面
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('芯智AI助手已启动');
-    
-    // 添加一些示例对话
-    setTimeout(() => {
-        addMessage('欢迎使用芯智AI助手！点击上方快速提问按钮开始体验。', 'ai');
-    }, 500);
-});
+// 显示专利详情
+function showPatentDetail(index) {
+    alert(`专利详情功能开发中...\n这是第 ${index + 1} 个风险项的详细信息。\n完整功能将在后续版本中提供。`);
+}
+
+// 下载报告
+function downloadReport() {
+    alert('报告下载功能开发中...\n当前版本支持在线查看，后续版本将提供PDF导出功能。');
+}
+
+// 联系专家
+function connectExpert() {
+    window.location.href = 'expert.html';
+}
+
+// 导出函数供HTML调用
+window.sendMessage = sendMessage;
+window.quickQuestion = quickQuestion;
+window.analyzeRisk = analyzeRisk;
