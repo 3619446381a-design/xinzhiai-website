@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>芯智AI助手 | 新国标电池研发合规系统</title>
-    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 修复后的CDN链接 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="https://img.icons8.com/color/96/000000/battery.png">
 </head>
 <body>
     <!-- 导航栏 -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="#">
                 <i class="fas fa-microchip"></i>
@@ -46,7 +47,7 @@
     <!-- AI对话区域 -->
     <div id="chat" class="container main-content">
         <div class="card chat-card">
-            <div class="card-header">
+            <div class="card-header bg-primary text-white">
                 <h4><i class="fas fa-comments"></i> 芯智AI对话助手</h4>
                 <small>基于电池专业知识库，回答您的新国标研发问题</small>
             </div>
@@ -106,39 +107,47 @@
         <h3 class="text-center mb-4"><i class="fas fa-cogs"></i> 核心功能模块</h3>
         <div class="row">
             <div class="col-md-3 mb-3">
-                <div class="feature-card">
-                    <div class="feature-icon bg-primary">
-                        <i class="fas fa-brain"></i>
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon bg-primary mb-3">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h5>知识增强引擎</h5>
+                        <p>深度理解电池专业术语，杜绝AI幻觉</p>
                     </div>
-                    <h5>知识增强引擎</h5>
-                    <p>深度理解电池专业术语，杜绝AI幻觉</p>
                 </div>
             </div>
             <div class="col-md-3 mb-3">
-                <div class="feature-card">
-                    <div class="feature-icon bg-danger">
-                        <i class="fas fa-shield-alt"></i>
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon bg-danger mb-3">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h5>风险动态评估</h5>
+                        <p>专利侵权+新国标合规双重扫描</p>
                     </div>
-                    <h5>风险动态评估</h5>
-                    <p>专利侵权+新国标合规双重扫描</p>
                 </div>
             </div>
             <div class="col-md-3 mb-3">
-                <div class="feature-card">
-                    <div class="feature-icon bg-success">
-                        <i class="fas fa-lightbulb"></i>
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon bg-success mb-3">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h5>智能优化建议</h5>
+                        <p>基于公开文献的替代方案推荐</p>
                     </div>
-                    <h5>智能优化建议</h5>
-                    <p>基于公开文献的替代方案推荐</p>
                 </div>
             </div>
             <div class="col-md-3 mb-3">
-                <div class="feature-card">
-                    <div class="feature-icon bg-warning">
-                        <i class="fas fa-user-tie"></i>
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="feature-icon bg-warning mb-3">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h5>专家服务对接</h5>
+                        <p>一键连接专利律师与电池专家</p>
                     </div>
-                    <h5>专家服务对接</h5>
-                    <p>一键连接专利律师与电池专家</p>
                 </div>
             </div>
         </div>
@@ -147,7 +156,7 @@
     <!-- 知识库查询 -->
     <div id="knowledge" class="container mt-5">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header bg-info text-white">
                 <h4><i class="fas fa-database"></i> 新国标知识库</h4>
             </div>
             <div class="card-body">
@@ -155,25 +164,25 @@
                     <div class="col-md-6">
                         <h5><i class="fas fa-file-contract"></i> 国家标准查询</h5>
                         <ul class="list-group">
-                            <li class="list-group-item">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <strong>GB38031-2025</strong>：电动汽车用动力蓄电池安全要求
-                                <button class="btn btn-sm btn-outline-info float-end" onclick="showStandard('GB38031')">查看详情</button>
+                                <button class="btn btn-sm btn-outline-info" onclick="showStandard('GB38031')">查看详情</button>
                             </li>
-                            <li class="list-group-item">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <strong>GB/T 34014-2023</strong>：汽车用动力电池编码规则
-                                <button class="btn btn-sm btn-outline-info float-end" onclick="showStandard('GB34014')">查看详情</button>
+                                <button class="btn btn-sm btn-outline-info" onclick="showStandard('GB34014')">查看详情</button>
                             </li>
                         </ul>
                     </div>
                     <div class="col-md-6">
                         <h5><i class="fas fa-chart-line"></i> 风险分析演示</h5>
-                        <div class="risk-chart">
-                            <div class="risk-item low-risk">
+                        <div class="risk-chart mt-3">
+                            <div class="risk-item low-risk mb-2">
                                 <div class="risk-label">低风险</div>
                                 <div class="risk-bar" style="width: 30%"></div>
                                 <div class="risk-percent">30%</div>
                             </div>
-                            <div class="risk-item medium-risk">
+                            <div class="risk-item medium-risk mb-2">
                                 <div class="risk-label">中风险</div>
                                 <div class="risk-bar" style="width: 50%"></div>
                                 <div class="risk-percent">50%</div>
@@ -191,7 +200,7 @@
     </div>
 
     <!-- 页脚 -->
-    <footer class="footer mt-5">
+    <footer class="footer mt-5 py-4 bg-dark text-white">
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
@@ -205,7 +214,7 @@
                         <i class="fas fa-phone"></i> 技术支持：400-xxx-xxxx
                     </p>
                     <div class="social-icons">
-                        <span class="badge bg-info">演示版本 v1.0</span>
+                        <span class="badge bg-info me-2">演示版本 v1.0</span>
                         <span class="badge bg-success">已备案</span>
                     </div>
                 </div>
@@ -214,7 +223,7 @@
     </footer>
 
     <!-- 引入JavaScript -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
